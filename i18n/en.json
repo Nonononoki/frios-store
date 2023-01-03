@@ -1,0 +1,16 @@
+{
+    "get": "Get",
+    "open-source": "Open-source",
+    "proprietary": "Proprietary",
+    "website": "Website",
+    "mtx": "Microtransactions",
+    "category": "Category",
+    "ads": "Ads",
+    "screenshots": "Screenshots",
+    "official": "Official",
+    "unofficial": "Unofficial",
+    "downloading": "Downloading",
+    "version": "Version",
+    "unknown": "Unknown",
+    "update": "Update" 
+}
