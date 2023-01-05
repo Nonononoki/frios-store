@@ -46,11 +46,29 @@ export type AppInfoT = {
   mtx: boolean;
   official: boolean;
   nsfw: boolean;
+}
+
+export type AppInfoDto = {
+  url: string;
+  name: string;
+  website: string;
+  source: AppSourceE;
+  file: AppFileE;
+  category: AppCategoryE;
+  icon: string;
+  screenshots: Array<string>;
+  description: string;
+  opensource: boolean;
+  ads: boolean;
+  mtx: boolean;
+  official: boolean;
+  nsfw: boolean;
 
   bundleId: string;
   version: string;
   installed: boolean;
   hasUpdate: boolean;
+  visible: boolean;
 }
 
 export type GithubReleasesT = {

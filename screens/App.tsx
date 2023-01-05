@@ -2,14 +2,13 @@ import React from "react";
 import { useTheme, Text, Button, Dialog, Portal, Provider, TextInput, IconButton } from "react-native-paper";
 import { View, Platform, StyleSheet, Image, Dimensions, ScrollView, RefreshControl } from "react-native";
 import * as Global from "../Global";
-import * as I18N from "../i18n";
 
-const App = () => {
+const App = ({ route, navigation }) => {
+
+    const { app } = route.params;
 
     const { colors } = useTheme();
     const window = Dimensions.get("window");
-    const updateIntervalHours = 24; //TODO When sources should be updated
-
 
     const [refreshing, setRefreshing] = React.useState(false);
 

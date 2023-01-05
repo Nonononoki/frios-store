@@ -5632,6 +5632,11 @@ react-native-safe-area-view@^0.14.9:
   dependencies:
     hoist-non-react-statics "^2.3.1"
 
+react-native-screen@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-screen/-/react-native-screen-1.0.1.tgz#80598bb86ade91e2fd277dfe6423132371eadb49"
+  integrity sha512-wdgUV2B/1XIBG1zhyLWtCkDwc2CpfF/TiZdkRnRtSlgibc6Rzjnc96cjYjRLKq8xS229m9+VXP2rbciZLDaBaQ==
+
 react-native-vector-icons@^9.2.0:
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-9.2.0.tgz#3c0c82e95defd274d56363cbe8fead8d53167ebd"
