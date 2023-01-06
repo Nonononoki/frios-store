@@ -36,6 +36,7 @@ export type AppInfoT = {
   name: string;
   website: string;
   source: AppSourceE;
+  author: string;
   file: AppFileE;
   category: AppCategoryE;
   icon: string;
@@ -53,6 +54,7 @@ export type AppInfoDto = {
   name: string;
   website: string;
   source: AppSourceE;
+  author: string;
   file: AppFileE;
   category: AppCategoryE;
   icon: string;
@@ -64,6 +66,7 @@ export type AppInfoDto = {
   official: boolean;
   nsfw: boolean;
 
+  screenshotObjs: Array<Object>;
   bundleId: string;
   version: string;
   installed: boolean;

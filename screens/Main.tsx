@@ -3,13 +3,13 @@ import { useTheme, Text, Button, Dialog, Portal, Provider, TextInput, IconButton
 import { View, FlatList, Platform, StyleSheet, Image, Dimensions, ScrollView, RefreshControl, TouchableOpacity, Keyboard } from "react-native";
 import * as Global from "../Global";
 import { AppInfoDto, AppInfoT } from "../types";
+import { AppListItem } from "../components";
 
 const Main = () => {
 
     const { colors } = useTheme();
     const window = Dimensions.get("window");
     const updateIntervalHours = 24; //When sources should be updated TODO should be able to be changed by user
-    const iconSize = 60;
 
     const [apps, setApps] = React.useState(Array<AppInfoDto>);
     const [refreshing, setRefreshing] = React.useState(false);
@@ -32,6 +32,7 @@ const Main = () => {
             app.name = value.name;
             app.website = value.website;
             app.source = value.source;
+            app.author = value.author;
             app.file = value.file;
             app.category = value.category;
             app.icon = value.icon;
@@ -47,6 +48,14 @@ const Main = () => {
             app.version = "value.name"; //TODO
             app.hasUpdate = false; //TODO
             app.visible = true;
+
+            var imgObjs = [];
+            while (app.screenshots.length) {
+                let uri = app.screenshots.shift();
+                let obj = { uri: uri };
+                imgObjs.push(obj);
+            }
+            app.screenshotObjs = imgObjs;
             arr.push(app);
         }
         setApps(arr);
@@ -75,11 +84,7 @@ const Main = () => {
         }
     }
 
-    function navigateApp(app: AppInfoDto) {
-        Global.navigate("App", {
-            app: app
-        });
-    }
+
 
     return (
         <View style={{ height: window.height, width: window.width, backgroundColor: colors.background }}>
@@ -94,23 +99,7 @@ const Main = () => {
                 data={apps}
                 keyExtractor={(item, index) => { return item.bundleId }}
                 renderItem={({ item }) => item.visible ? (
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 8, paddingBottom: 8 }}>
-                        <View style={{ flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
-                            <View>
-                                <TouchableOpacity onPress={() => { navigateApp(item) }}>
-                                    <Image style={{ width: iconSize, height: iconSize, borderRadius: 8 }} source={{ uri: item.icon }}></Image>
-                                </TouchableOpacity></View>
-                            <View style={{ flexGrow: 1, marginLeft: 8, marginRight: 12, flex: 1 }}>
-                                <TouchableOpacity onPress={() => { navigateApp(item) }}>
-                                    <Text style={{ fontSize: 18 }}>{item.name}</Text>
-                                    <Text style={{ fontSize: 10, opacity: 0.7 }} numberOfLines={2}>{item.description}</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View>
-                                <Button style={{}} mode="elevated">{Global.I18N.get("get")}</Button>
-                            </View>
-                        </View>
-                    </View>
+                    <AppListItem item={item} />
                 ) : undefined}
             />
         </View>

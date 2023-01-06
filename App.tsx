@@ -1,5 +1,5 @@
 import React from "react";
-import { Main, Settings } from "./screens";
+import { AppDetail, Main, Settings } from "./screens";
 import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from "@react-navigation/native";
 import { useColorScheme } from 'react-native';
@@ -61,9 +61,9 @@ export default function App() {
               component={Settings}
             ></Stack.Screen>
             <Stack.Screen
-              name="App"
+              name="AppDetail"
               options={{ headerShown: true, animationEnabled: false }}
-              component={App}
+              component={AppDetail}
             ></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
