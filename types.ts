@@ -58,15 +58,14 @@ export type AppInfoDto = {
   file: AppFileE;
   category: AppCategoryE;
   icon: string;
-  screenshots: Array<string>;
+  screenshots: Array<Object>;
   description: string;
   opensource: boolean;
   ads: boolean;
   mtx: boolean;
   official: boolean;
   nsfw: boolean;
-
-  screenshotObjs: Array<Object>;
+  
   bundleId: string;
   version: string;
   installed: boolean;

@@ -36,7 +36,6 @@ const Main = () => {
             app.file = value.file;
             app.category = value.category;
             app.icon = value.icon;
-            app.screenshots = value.screenshots;
             app.description = value.description["en"]; //TODO
             app.opensource = value.opensource;
             app.ads = value.ads;
@@ -50,12 +49,12 @@ const Main = () => {
             app.visible = true;
 
             var imgObjs = [];
-            while (app.screenshots.length) {
-                let uri = app.screenshots.shift();
+            while (value.screenshots.length) {
+                let uri = value.screenshots.shift();
                 let obj = { uri: uri };
                 imgObjs.push(obj);
             }
-            app.screenshotObjs = imgObjs;
+            app.screenshots = imgObjs;
             arr.push(app);
         }
         setApps(arr);
