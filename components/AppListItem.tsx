@@ -4,15 +4,19 @@ import { Button, Text } from "react-native-paper";
 import { AppInfoDto } from "../types";
 import * as Global from "../Global";
 
-const AppListItem = ({item}) => {
+const AppListItem = ({ item }) => {
 
   const iconSize = 60;
 
   function navigateApp(app: AppInfoDto) {
     Global.navigate("AppDetail", {
-        app: app
+      app: app
     });
-}
+  }
+
+  function downloadApp() {
+    Global.downloadApp(item)
+  }
 
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 8, paddingBottom: 8 }}>
@@ -28,7 +32,7 @@ const AppListItem = ({item}) => {
           </TouchableOpacity>
         </View>
         <View>
-          <Button style={{}} mode="elevated">{Global.I18N.get("get")}</Button>
+          <Button style={{}} mode="elevated" onPress={() => downloadApp()}>{Global.I18N.get("get")}</Button>
         </View>
       </View>
     </View>

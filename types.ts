@@ -1,6 +1,6 @@
 export enum AppSourceE {
   GITHUB = "github",
-  LIBRETRO = "libretro",
+  RETROARCH = "retroarch",
   KODI = "kodi"
 }
 
@@ -67,7 +67,6 @@ export type AppInfoDto = {
   nsfw: boolean;
   
   bundleId: string;
-  version: string;
   installed: boolean;
   hasUpdate: boolean;
   visible: boolean;
@@ -77,6 +76,7 @@ export type GithubReleasesT = {
   assets_url: string;
   name: string;
   assets: Array<GithubReleasesAssetT>;
+  created_at: Date;
 }
 
 export type GithubReleasesAssetT = {

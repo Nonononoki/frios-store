@@ -8,12 +8,14 @@ import * as Global from "../Global";
 const AppDetail = ({ route, navigation }) => {
 
     const { app } = route.params;
-    const RED = "#ba000d";
-    const GREEN = "#087f23";
-    const ORANGE = "#c66900";
+    const RED = "#ff867c";
+    const GREEN = "#98ee99";
+    const ORANGE = "#ffd95b";
 
     const iconSize = 110;
     const screenshotSize = 400;
+    const descriptionHeightCollapsed = 78;
+
 
     const { colors } = useTheme();
     const window = Dimensions.get("window");
@@ -21,7 +23,8 @@ const AppDetail = ({ route, navigation }) => {
     const [refreshing, setRefreshing] = React.useState(false);
     const [imageViewVisible, setImageViewVisible] = React.useState(false);
     const [imageViewIndex, setImageViewIndex] = React.useState(0);
-
+    const [descriptionCollapsed, setDescriptionCollapsed] = React.useState(true);
+    var [descriptionHeight, setDescriptionHeight] = React.useState<string | number>(descriptionHeightCollapsed);
 
     async function load() {
     }
@@ -33,13 +36,21 @@ const AppDetail = ({ route, navigation }) => {
         load();
     }, []);
 
+    React.useEffect(() => {
+        if (descriptionCollapsed) {
+            setDescriptionHeight(descriptionHeightCollapsed);
+        } else {
+            setDescriptionHeight('auto');
+        }
+    }, [descriptionCollapsed]);
+
     async function openImage(index: number) {
         setImageViewIndex(index);
         setImageViewVisible(true);
     }
 
     return (
-        <ScrollView style={[{ flex: 1, padding: 12, backgroundColor: colors.background }]}
+        <ScrollView style={[{ flex: 1, paddingLeft: 12, paddingRight: 12, backgroundColor: colors.background }]}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}>
             <View style={{ flexDirection: 'row' }}>
                 <Image style={{ width: iconSize, height: iconSize, borderRadius: 8 }} source={{ uri: app.icon }}></Image>
@@ -50,7 +61,7 @@ const AppDetail = ({ route, navigation }) => {
                     </View>
                     <View style={{ flexDirection: 'row' }}>
                         <Button mode="contained" style={{}}>{Global.I18N.get("get")}</Button>
-                        {!app.mtx &&
+                        {app.mtx &&
                             <View style={{ alignSelf: 'center' }}>
                                 <Text style={{ paddingLeft: 12, fontSize: 10, width: 90, opacity: 0.7 }}>{Global.I18N.get("mtx")}</Text>
                             </View>
@@ -59,48 +70,60 @@ const AppDetail = ({ route, navigation }) => {
                 </View>
             </View>
 
-            <ScrollView horizontal={true} style={{ marginTop: 24, paddingBottom: 6 }}>
-                {
-                    app.opensource ?
-                        <Button style={{ marginRight: 4, backgroundColor: GREEN }} icon="source-branch" mode="contained">
-                            {Global.I18N.get("open-source")}
-                        </Button> :
-                        <Button style={{ marginRight: 4, backgroundColor: RED }} icon="lock" mode="contained">
-                            {Global.I18N.get("proprietary")}
+            <View style={{ marginTop: 24 }}>
+                <ScrollView horizontal={true} style={{ paddingBottom: 6 }}>
+                    {
+                        app.opensource ?
+                            <Button style={{ marginRight: 4 }} buttonColor={GREEN} icon="source-branch" mode="contained-tonal">
+                                {Global.I18N.get("open-source")}
+                            </Button> :
+                            <Button style={{ marginRight: 4 }} buttonColor={RED} icon="lock" mode="contained-tonal">
+                                {Global.I18N.get("proprietary")}
+                            </Button>
+                    }
+                    {
+                        app.ads &&
+                        <Button style={{ marginRight: 4 }} buttonColor={RED} icon="advertisements" mode="contained-tonal">
+                            {Global.I18N.get("ads")}
                         </Button>
-                }
-                {
-                    app.ads &&
-                    <Button style={{ marginRight: 4, backgroundColor: RED }} icon="advertisements" mode="contained">
-                        {Global.I18N.get("ads")}
-                    </Button>
-                }
-                {
-                    app.official ?
-                        <Button style={{ marginRight: 4, backgroundColor: GREEN }} icon="check" mode="contained">
-                            {Global.I18N.get("official")}
-                        </Button> :
-                        <Button style={{ marginRight: 4, backgroundColor: ORANGE }} icon="alert" mode="contained">
-                            {Global.I18N.get("unofficial")}
+                    }
+                    {
+                        app.official ?
+                            <Button style={{ marginRight: 4 }} buttonColor={GREEN} icon="check" mode="contained-tonal">
+                                {Global.I18N.get("official")}
+                            </Button> :
+                            <Button style={{ marginRight: 4 }} buttonColor={ORANGE} icon="alert" mode="contained-tonal">
+                                {Global.I18N.get("unofficial")}
+                            </Button>
+                    }
+                    {
+                        app.website &&
+                        <Button style={{ marginRight: 4 }} icon="web" mode="contained" onPress={() => Linking.openURL(app.website)}>
+                            {Global.I18N.get("website")}
                         </Button>
-                }
-                {
-                    app.website &&
-                    <Button style={{ marginRight: 4 }} icon="web" mode="contained" onPress={() => Linking.openURL(app.website)}>
-                        {Global.I18N.get("website")}
-                    </Button>
-                }
-            </ScrollView>
+                    }
+                </ScrollView>
+            </View>
 
-            <ScrollView horizontal={true} style={{ marginTop: 24, paddingBottom: 6, marginRight: 8 }}>
-                {app.screenshots.map((obj: { uri: string; }, index: number) => {
-                    return (
-                        <TouchableOpacity onPress={() => openImage(index)}>
-                            <Image style={{ width: screenshotSize / 2, height: screenshotSize, margin: 4 }} source={{ uri: obj.uri }} />
-                        </TouchableOpacity>
-                    );
-                })}
-            </ScrollView>
+            <View style={{ marginTop: 24, paddingBottom: 6 }}>
+                <Text style={{ fontSize: 18, fontWeight: "700", marginBottom: 4 }}>{Global.I18N.get("description")}</Text>
+                <TouchableOpacity onPress={() => setDescriptionCollapsed(!descriptionCollapsed)}>
+                    <Text style={{ height: descriptionHeight }}>{app.description}</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={{ marginTop: 24, paddingBottom: 6 }}>
+                {app.screenshots.length > 0 && <Text style={{ fontSize: 18, fontWeight: "700", marginBottom: 4 }}>{Global.I18N.get("screenshots")}</Text>}
+                <ScrollView horizontal={true}>
+                    {app.screenshots.map((obj: { uri: string; }, index: number) => {
+                        return (
+                            <TouchableOpacity onPress={() => openImage(index)} key={index}>
+                                <Image style={{ width: screenshotSize / 2, height: screenshotSize, margin: 4 }} source={{ uri: obj.uri }} />
+                            </TouchableOpacity>
+                        );
+                    })}
+                </ScrollView>
+            </View>
 
             <ImageView
                 images={app?.screenshots}

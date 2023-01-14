@@ -36,17 +36,20 @@ const Main = () => {
             app.file = value.file;
             app.category = value.category;
             app.icon = value.icon;
-            app.description = value.description["en"]; //TODO
             app.opensource = value.opensource;
             app.ads = value.ads;
             app.mtx = value.mtx;
             app.official = value.official;
             app.nsfw = value.nsfw;
             app.bundleId = key;
-            app.installed = false; //TODO
-            app.version = "value.name"; //TODO
-            app.hasUpdate = false; //TODO
             app.visible = true;
+
+            let locale = Global.I18N.locale;
+            app.description = value.description[locale] ? value.description[locale] : value.description["en"];
+
+            app.installed = false; //TODO
+            app.version = "0.0.1"; //TODO
+            app.hasUpdate = false; //TODO
 
             var imgObjs = [];
             while (value.screenshots.length) {

@@ -12,5 +12,6 @@
     "downloading": "Downloading",
     "version": "Version",
     "unknown": "Unknown",
-    "update": "Update" 
+    "update": "Update" ,
+    "description": "Description"
 }
