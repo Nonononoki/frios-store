@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, ToastAndroid } from 'react-native';
+import { Linking, Platform, ToastAndroid } from 'react-native';
 import axios, { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +10,8 @@ import * as FileSystem from 'expo-file-system';
 import { AppInfoDto, AppSourceE, GithubReleasesAssetT, GithubReleasesT } from "./types";
 const { DOMParser } = require('react-native-html-parser')
 import { URL } from 'react-native-url-polyfill';
+import * as Sharing from 'expo-sharing';
+import moment from "moment";
 
 export const navigationRef = createNavigationContainerRef();
 export const TYPE_IOS = "ios";
@@ -27,6 +29,7 @@ export const URL_SOURCE_IOS = "https://raw.githubusercontent.com/Nonononoki/frio
 export const URL_SOURCE_TVOS = "https://raw.githubusercontent.com/Nonononoki/frios-sources/master/apps-tvos.json";
 
 export var appsDownloadingSet: Set<string> = new Set<string>();
+export var appDetailDoneDownload = null;
 
 export async function fetch(url: string = "", method: string = "get", data: any = {},
   contentType: string = "application/json"): Promise<AxiosResponse<any, any>> {
@@ -96,7 +99,7 @@ export function getHostname(uri: string) {
 
 export async function downloadApp(app: AppInfoDto) {
   let uri: string;
-  let date: string;
+  let date: Date;
   appsDownloadingSet.add(app.bundleId);
 
   if (app.source == AppSourceE.GITHUB) {
@@ -116,7 +119,7 @@ export async function downloadApp(app: AppInfoDto) {
     }
     if (downloadUrl) {
       uri = downloadUrl;
-      date = new Date(data.created_at).toISOString().split('T')[0];
+      date = new Date(data.created_at);
     }
   } else if (app.source == AppSourceE.RETROARCH) {
     let response = await fetch(app.url);
@@ -128,7 +131,8 @@ export async function downloadApp(app: AppInfoDto) {
     const linkCol = imageCol.nextSibling;
     const dateCol = linkCol.nextSibling;
     uri = getHostname(app.url) + linkCol.firstChild.getAttribute("href");
-    date = dateCol.textContent;
+    let dateString = dateCol.textContent;
+    date = moment(dateString, 'YYYY-MM-DD hh:mm').toDate();
   } else if (app.source == AppSourceE.KODI) {
     let response = await fetch(app.url);
     let data: string = response.data;
@@ -146,17 +150,23 @@ export async function downloadApp(app: AppInfoDto) {
         found = true;
         let sizeCol = dataCol.nextSibling;
         let dateCol = sizeCol.nextSibling;
-        date = dateCol.textContent;
+        let dateString = dateCol.textContent;
+        date = moment(dateString, 'YYYY-MMM-DD').toDate();
+        console.log(date);
         uri = app.url + dlLink;
       }
     }
   }
 
   if (uri) {
-    let path = DIR_ALOVOA + app.bundleId + "_" + date + "." + app.file;
+    let path = DIR_ALOVOA + app.bundleId + "_" + date.getTime() + "." + app.file;
     console.log(uri)
     console.log(path)
     //await FileSystem.downloadAsync(uri, path);
+    console.log("Download finished!")
+    if (await Sharing.isAvailableAsync()) {
+      Sharing.shareAsync(path); 
+    }
   }
 
   appsDownloadingSet.delete(app.bundleId);

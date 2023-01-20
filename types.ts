@@ -76,7 +76,7 @@ export type GithubReleasesT = {
   assets_url: string;
   name: string;
   assets: Array<GithubReleasesAssetT>;
-  created_at: Date;
+  created_at: string;
 }
 
 export type GithubReleasesAssetT = {
