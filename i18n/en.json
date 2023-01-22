@@ -12,5 +12,8 @@
     "downloading": "Downloading",
     "version": "Version",
     "unknown": "Unknown",
-    "description": "Description"
+    "description": "Description",
+    "update": "Update",
+    "install": "Install",
+    "clear-local-files": "Clear local files" 
 }

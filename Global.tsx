@@ -23,13 +23,33 @@ export const DIR_ALOVOA = FileSystem.documentDirectory;
 
 export var TYPE = TYPE_IOS;
 
-export const STORAGE_UPDATE_DATE = "UPDATE_DATE";
+export const STORAGE_INSTALLED_APPS = "INSTALLED_APPS";
 export const I18N = i18n.getI18n();
 export const URL_SOURCE_IOS = "https://raw.githubusercontent.com/Nonononoki/frios-sources/master/apps-ios.json";
 export const URL_SOURCE_TVOS = "https://raw.githubusercontent.com/Nonononoki/frios-sources/master/apps-tvos.json";
 
 export var appsDownloadingSet: Set<string> = new Set<string>();
 export var appDetailDoneDownload = null;
+
+export var installedApps: Map<string, AppInfoDto> = new Map<string, AppInfoDto>();
+
+export async function initDb() {
+  let dbString = (await getStorage(STORAGE_INSTALLED_APPS));
+  if (dbString) {
+    installedApps = new Map(JSON.parse(dbString));
+  }
+  //TODO check local storage and removeAppFromDb()
+}
+
+export async function deleteAppFromDb() {
+
+}
+
+export async function saveAppToDb(appInfo: AppInfoDto) {
+  installedApps.set(appInfo.bundleId, appInfo);
+  let json = JSON.stringify([...installedApps]);
+  await setStorage(STORAGE_INSTALLED_APPS, json);
+}
 
 export async function fetch(url: string = "", method: string = "get", data: any = {},
   contentType: string = "application/json"): Promise<AxiosResponse<any, any>> {
@@ -56,19 +76,25 @@ export function navigate(name: string, params?: any) {
 }
 
 export async function getStorage(key: string): Promise<string | null> {
+  return await AsyncStorage.getItem(key);
+  /*
   if (Platform.OS === 'web') {
     return await AsyncStorage.getItem(key);
   } else {
     return await SecureStore.getItemAsync(key);
   }
+  */
 }
 
 export async function setStorage(key: string, value: string) {
+  await AsyncStorage.setItem(key, value);
+  /*
   if (Platform.OS === 'web') {
     await AsyncStorage.setItem(key, value);
   } else {
     await SecureStore.setItemAsync(key, value);
   }
+  */
 }
 
 export function showToast(text: string) {
@@ -98,10 +124,26 @@ export function getHostname(uri: string) {
 }
 
 export async function downloadApp(app: AppInfoDto) {
-  let uri: string;
-  let date: Date;
   appsDownloadingSet.add(app.bundleId);
 
+  let appDb = await getAppDownloadLink(app);
+
+  if (appDb.remoteLocation) {
+    let path = DIR_ALOVOA + app.bundleId + "_" + appDb.updateDate.getTime() + "." + app.file;
+    await FileSystem.downloadAsync(appDb.remoteLocation, path);
+    console.log("Download finished!")
+    app.updateDate = appDb.updateDate;
+    app.localLocation = path;
+    await installApp(app);
+    console.log(app)
+    await saveAppToDb(app);
+  }
+  appsDownloadingSet.delete(app.bundleId);
+}
+
+export async function getAppDownloadLink(app: AppInfoDto): Promise<AppInfoDto> {
+  let uri: string;
+  let date: Date;
   if (app.source == AppSourceE.GITHUB) {
     let url = getGithubApiUrl(app.url);
     let response = await fetch(url);
@@ -152,36 +194,30 @@ export async function downloadApp(app: AppInfoDto) {
         let dateCol = sizeCol.nextSibling;
         let dateString = dateCol.textContent;
         date = moment(dateString, 'YYYY-MMM-DD').toDate();
-        console.log(date);
         uri = app.url + dlLink;
       }
     }
   }
-
-  if (uri) {
-    let path = DIR_ALOVOA + app.bundleId + "_" + date.getTime() + "." + app.file;
-    console.log(uri)
-    console.log(path)
-    //await FileSystem.downloadAsync(uri, path);
-    console.log("Download finished!")
-    if (await Sharing.isAvailableAsync()) {
-      Sharing.shareAsync(path); 
-    }
-  }
-
-  appsDownloadingSet.delete(app.bundleId);
+  app.updateDate = date;
+  app.remoteLocation = uri;
+  return app;
 }
 
-//TODO
 export async function hasAppUpdate(app: AppInfoDto): Promise<boolean> {
-  if (app.source == AppSourceE.GITHUB) {
-    let url = getGithubApiUrl(app.url);
-    let response = await fetch(url);
-    let data: GithubReleasesT = response.data;
-  } else if (app.source == AppSourceE.RETROARCH) {
-  } else if (app.source == AppSourceE.KODI) {
+  let installedApp = installedApps.get(app.bundleId)
+  let remoteApp = await getAppDownloadLink(app);
+  if (remoteApp && remoteApp.updateDate > installedApp.updateDate) {
+
+    return true;
   }
   return false;
+}
+
+export async function installApp(app: AppInfoDto) {
+  if (await Sharing.isAvailableAsync()) {
+    console.log(app.localLocation)
+    Sharing.shareAsync(app.localLocation);
+  }
 }
 
 export const format = (str: string, ...args: any[]) => args.reduce((s, v) => s.replace('%s', v), str);

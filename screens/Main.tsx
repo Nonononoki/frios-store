@@ -11,12 +11,25 @@ const Main = () => {
     const window = Dimensions.get("window");
     const updateIntervalHours = 24; //When sources should be updated TODO should be able to be changed by user
 
-    const [apps, setApps] = React.useState(Array<AppInfoDto>);
+    const [apps, setApps] = React.useState<Map<string, AppInfoDto>>();
     const [refreshing, setRefreshing] = React.useState(false);
+    const [refreshFlatlist, setRefreshFlatList] = React.useState(false);
     const [searchQuery, setSearchQuery] = React.useState("");
 
     async function load() {
-        update();
+        await Global.initDb();
+        await update();
+    }
+
+    async function loadAppsFromDb() {
+        if (Global.installedApps) {
+            for (let [key, value] of Global.installedApps) {
+                value.isDownloaded = true;
+                value.hasUpdate = await Global.hasAppUpdate(value);
+                apps.set(key, value);
+            }         
+            setRefreshFlatList(!refreshFlatlist);
+        }
     }
 
     async function update() {
@@ -25,7 +38,7 @@ const Main = () => {
         var response = await Global.fetch(Global.URL_SOURCE_IOS)
         let data: Map<string, AppInfoT> = response.data;
 
-        const arr: AppInfoDto[] = [];
+        const map = new Map<string, AppInfoDto>();
         for (let [key, value] of Object.entries(data)) {
             const app: AppInfoDto = {} as AppInfoDto;
             app.url = value.url;
@@ -47,10 +60,6 @@ const Main = () => {
             let locale = Global.I18N.locale;
             app.description = value.description[locale] ? value.description[locale] : value.description["en"];
 
-            app.installed = false; //TODO
-            app.version = "0.0.1"; //TODO
-            app.hasUpdate = false; //TODO
-
             var imgObjs = [];
             while (value.screenshots.length) {
                 let uri = value.screenshots.shift();
@@ -58,14 +67,21 @@ const Main = () => {
                 imgObjs.push(obj);
             }
             app.screenshots = imgObjs;
-            arr.push(app);
+
+            app.isDownloaded = false;
+            app.hasUpdate = false;
+            map.set(key, app);
         }
-        setApps(arr);
+        setApps(map);
     }
 
     React.useEffect(() => {
         load();
     }, []);
+
+    React.useEffect(() => {
+        loadAppsFromDb();
+    }, [apps]);
 
     function onChangeSearch(text: string) {
         setSearchQuery(text);
@@ -84,9 +100,8 @@ const Main = () => {
                 app.visible = true;
             });
         }
+        setRefreshFlatList(!refreshFlatlist);
     }
-
-
 
     return (
         <View style={{ height: window.height, width: window.width, backgroundColor: colors.background }}>
@@ -96,9 +111,10 @@ const Main = () => {
                 value={searchQuery}>
             </Searchbar>
             <FlatList style={[{ flex: 1, backgroundColor: colors.background, paddingLeft: 12, paddingRight: 12 }]}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={update} />}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}
                 numColumns={1}
-                data={apps}
+                data={apps ? [...apps.values()] : undefined}
+                extraData={refreshFlatlist}
                 keyExtractor={(item, index) => { return item.bundleId }}
                 renderItem={({ item }) => item.visible ? (
                     <AppListItem item={item} />

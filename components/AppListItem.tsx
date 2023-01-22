@@ -1,12 +1,16 @@
 import React from "react";
 import { TouchableOpacity, View, Image } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import { AppInfoDto } from "../types";
 import * as Global from "../Global";
 
 const AppListItem = ({ item }) => {
 
+  const { colors } = useTheme();
   const iconSize = 60;
+  const buttonSize = 100;
+  const buttonFontSize = 13;
+  const [downloading, setDownloading] = React.useState(false);
 
   function navigateApp(app: AppInfoDto) {
     Global.navigate("AppDetail", {
@@ -15,7 +19,13 @@ const AppListItem = ({ item }) => {
   }
 
   function downloadApp() {
-    Global.downloadApp(item)
+    if(!downloading)
+      Global.downloadApp(item)
+  }
+
+  function installApp() {
+    if(!downloading)
+      Global.installApp(item);
   }
 
   return (
@@ -32,7 +42,15 @@ const AppListItem = ({ item }) => {
           </TouchableOpacity>
         </View>
         <View>
-          <Button style={{}} mode="elevated" onPress={() => downloadApp()}>{Global.I18N.get("get")}</Button>
+          {!item.isDownloaded && <Button loading={downloading} style={{ width: buttonSize }} mode="elevated" onPress={() => downloadApp()}>
+            <Text style={{ fontSize: buttonFontSize, color: colors.primary }}>{Global.I18N.get("get")}</Text>
+          </Button>}
+          {item.isDownloaded && item.hasUpdate && <Button loading={downloading} style={{ width: buttonSize }} mode="elevated" onPress={() => downloadApp()}>
+            <Text style={{ fontSize: buttonFontSize, color: colors.primary }}>{Global.I18N.get("update")}</Text>
+          </Button>}
+          {item.isDownloaded && !item.hasUpdate && <Button style={{ width: buttonSize }} mode="elevated" onPress={() => installApp()}>
+            <Text style={{ fontSize: buttonFontSize, color: colors.primary }}>{Global.I18N.get("install")}</Text>
+          </Button>}
         </View>
       </View>
     </View>

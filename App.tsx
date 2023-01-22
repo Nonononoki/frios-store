@@ -22,6 +22,7 @@ export default function App() {
   setTimeout(SplashScreen.hideAsync, 1000);
 
   const isDarkTheme = useColorScheme() == 'dark';
+  console.log(useColorScheme())
 
   const theme : ThemeProp = {
     ...isDarkTheme ? MD3DarkTheme : MD3LightTheme,
@@ -62,7 +63,7 @@ export default function App() {
             ></Stack.Screen>
             <Stack.Screen
               name="AppDetail"
-              options={{ headerShown: true, animationEnabled: false }}
+              options={{ headerShown: false, animationEnabled: false }}
               component={AppDetail}
             ></Stack.Screen>
           </Stack.Navigator>

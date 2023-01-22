@@ -50,6 +50,7 @@ export type AppInfoT = {
 }
 
 export type AppInfoDto = {
+  remoteLocation: string;
   url: string;
   name: string;
   website: string;
@@ -67,9 +68,13 @@ export type AppInfoDto = {
   nsfw: boolean;
   
   bundleId: string;
-  installed: boolean;
-  hasUpdate: boolean;
   visible: boolean;
+
+  isDownloaded: boolean;
+  hasUpdate: boolean;
+
+  updateDate: Date;
+  localLocation: string;
 }
 
 export type GithubReleasesT = {

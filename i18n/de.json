@@ -12,5 +12,8 @@
     "downloading": "Herunterladen",
     "version": "Version",
     "unknown": "Unbekannt",
-    "description": "Beschreibung"
+    "description": "Beschreibung",
+    "update": "Aktualisieren",
+    "install": "Installieren",
+    "clear-local-files": "Lokale Dateien löschen" 
 }
