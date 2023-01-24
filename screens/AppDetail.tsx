@@ -11,13 +11,14 @@ const AppDetail = ({ route, navigation }) => {
     const RED = "#ff867c";
     const GREEN = "#98ee99";
     const ORANGE = "#ffd95b";
+    const BUTTON_LABEL_COLOR = '#FFFFFF';
 
     const iconSize = 110;
     const screenshotSize = 400;
     const descriptionHeightCollapsed = 78;
 
     const buttonSize = 110;
-    const buttonFontSize = 16;
+    const buttonFontSize = 15;
 
     const { colors } = useTheme();
     const window = Dimensions.get("window");
@@ -54,11 +55,11 @@ const AppDetail = ({ route, navigation }) => {
     }
 
     async function downloadApp() {
-        if(!downloading) {
+        if (!downloading) {
             setDownloading(true);
             await Global.downloadApp(app)
             setDownloading(false);
-          }
+        }
     }
 
     async function installApp() {
@@ -72,7 +73,7 @@ const AppDetail = ({ route, navigation }) => {
     }
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => { navigation.goBack() }} />
                 <Appbar.Content title="" />
@@ -84,7 +85,7 @@ const AppDetail = ({ route, navigation }) => {
                 </Menu>
             </Appbar.Header>
 
-            <ScrollView style={[{ flex: 1, paddingLeft: 12, paddingRight: 12, marginTop: 12, backgroundColor: colors.background }]}
+            <ScrollView style={[{ flex: 1, paddingLeft: 12, paddingRight: 12, backgroundColor: colors.background }]}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}>
                 <View style={{ flexDirection: 'row' }}>
                     <Image style={{ width: iconSize, height: iconSize, borderRadius: 8 }} source={{ uri: app.icon }}></Image>
@@ -94,14 +95,14 @@ const AppDetail = ({ route, navigation }) => {
                             <Text style={{ fontSize: 12, opacity: 0.7 }}>{app.author}</Text>
                         </View>
                         <View style={{ flexDirection: 'row' }}>
-                            {!app.isDownloaded && <Button loading={downloading} style={{ width: buttonSize }} mode="contained" onPress={() => downloadApp()}>
-                                <Text style={{ fontSize: buttonFontSize }}>{Global.I18N.get("get")}</Text>
+                            {!app.isDownloaded && <Button loading={downloading} style={{ width: buttonSize }} labelStyle={{ fontSize: buttonFontSize, color: BUTTON_LABEL_COLOR }} mode="contained" onPress={() => downloadApp()}>
+                                {Global.I18N.get("get")}
                             </Button>}
-                            {app.isDownloaded && app.hasUpdate && <Button loading={downloading} style={{ width: buttonSize }} mode="contained" onPress={() => downloadApp()}>
-                                <Text style={{ fontSize: buttonFontSize }}>{Global.I18N.get("update")}</Text>
+                            {app.isDownloaded && app.hasUpdate && <Button loading={downloading} style={{ width: buttonSize }} labelStyle={{ fontSize: buttonFontSize, color: BUTTON_LABEL_COLOR }} mode="contained" onPress={() => downloadApp()}>
+                                {Global.I18N.get("update")}
                             </Button>}
-                            {app.isDownloaded && !app.hasUpdate && <Button style={{ width: buttonSize }} mode="contained" onPress={() => installApp()}>
-                                <Text style={{ fontSize: buttonFontSize, color: colors.background }}>{Global.I18N.get("install")}</Text>
+                            {app.isDownloaded && !app.hasUpdate && <Button style={{ width: buttonSize }} labelStyle={{ fontSize: buttonFontSize, color: BUTTON_LABEL_COLOR }} mode="contained" onPress={() => installApp()}>
+                                {Global.I18N.get("install")}
                             </Button>}
                             {app.mtx &&
                                 <View style={{ alignSelf: 'center' }}>
@@ -116,31 +117,31 @@ const AppDetail = ({ route, navigation }) => {
                     <ScrollView horizontal={true} style={{ paddingBottom: 6 }}>
                         {
                             app.opensource ?
-                                <Button style={{ marginRight: 4 }} buttonColor={GREEN} textColor={ useTheme().dark ? colors.background : colors.onBackground} icon="source-branch" mode="contained">
+                                <Button style={{ marginRight: 4 }} buttonColor={GREEN} textColor={useTheme().dark ? colors.background : colors.onBackground} icon="source-branch" mode="contained">
                                     {Global.I18N.get("open-source")}
                                 </Button> :
-                                <Button style={{ marginRight: 4 }} buttonColor={RED} textColor={ useTheme().dark ? colors.background : colors.onBackground} icon="lock" mode="contained">
+                                <Button style={{ marginRight: 4 }} buttonColor={RED} textColor={useTheme().dark ? colors.background : colors.onBackground} icon="lock" mode="contained">
                                     {Global.I18N.get("proprietary")}
                                 </Button>
                         }
                         {
                             app.ads &&
-                            <Button style={{ marginRight: 4 }} buttonColor={RED} textColor={ useTheme().dark ? colors.background : colors.onBackground} icon="advertisements" mode="contained">
+                            <Button style={{ marginRight: 4 }} buttonColor={RED} textColor={useTheme().dark ? colors.background : colors.onBackground} icon="advertisements" mode="contained">
                                 {Global.I18N.get("ads")}
                             </Button>
                         }
                         {
                             app.official ?
-                                <Button style={{ marginRight: 4 }} buttonColor={GREEN} textColor={ useTheme().dark ? colors.background : colors.onBackground} icon="check" mode="contained">
+                                <Button style={{ marginRight: 4 }} buttonColor={GREEN} textColor={useTheme().dark ? colors.background : colors.onBackground} icon="check" mode="contained">
                                     {Global.I18N.get("official")}
                                 </Button> :
-                                <Button style={{ marginRight: 4 }} buttonColor={ORANGE} textColor={ useTheme().dark ? colors.background : colors.onBackground} icon="alert" mode="contained">
+                                <Button style={{ marginRight: 4 }} buttonColor={ORANGE} textColor={useTheme().dark ? colors.background : colors.onBackground} icon="alert" mode="contained">
                                     {Global.I18N.get("unofficial")}
                                 </Button>
                         }
                         {
                             app.website &&
-                            <Button buttonColor={colors.secondary} style={{ marginRight: 4 }} icon="web" mode="contained" onPress={() => Linking.openURL(app.website)}>
+                            <Button buttonColor={colors.secondary} style={{ marginRight: 4 }} labelStyle={{ color: BUTTON_LABEL_COLOR }} icon="web" mode="contained" onPress={() => Linking.openURL(app.website)}>
                                 {Global.I18N.get("website")}
                             </Button>
                         }
@@ -151,7 +152,9 @@ const AppDetail = ({ route, navigation }) => {
                     <Text style={{ fontSize: 18, fontWeight: "700", marginBottom: 4 }}>{Global.I18N.get("description")}</Text>
                     <View>
                         <Text style={{ height: descriptionHeight }}>{app.description}</Text>
-                        <Button style={{paddingTop: 12}} onPress={() => setDescriptionCollapsed(!descriptionCollapsed)}>{descriptionCollapsed ? 'More' : 'Less'}</Button>
+                        <Button style={{ paddingTop: 12 }} onPress={() => setDescriptionCollapsed(!descriptionCollapsed)}>
+                            {descriptionCollapsed ? Global.I18N.get("more") : Global.I18N.get("less")}
+                        </Button>
                     </View>
 
                 </View>

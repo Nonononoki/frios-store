@@ -137,7 +137,6 @@ export async function downloadApp(app: AppInfoDto) {
     app.updateDate = appDb.updateDate;
     app.localLocation = path;
     await installApp(app);
-    console.log(app)
     await saveAppToDb(app);
   }
   appsDownloadingSet.delete(app.bundleId);
@@ -217,7 +216,6 @@ export async function hasAppUpdate(app: AppInfoDto): Promise<boolean> {
 
 export async function installApp(app: AppInfoDto) {
   if (await Sharing.isAvailableAsync()) {
-    console.log(app.localLocation)
     Sharing.shareAsync(app.localLocation);
   }
 }

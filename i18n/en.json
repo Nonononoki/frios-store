@@ -15,5 +15,8 @@
     "description": "Description",
     "update": "Update",
     "install": "Install",
-    "clear-local-files": "Clear local files" 
+    "clear-local-files": "Clear local files",
+    "more": "More",
+    "less": "Less",
+    "installing": "Installing"
 }

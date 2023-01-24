@@ -15,5 +15,8 @@
     "description": "Beschreibung",
     "update": "Aktualisieren",
     "install": "Installieren",
-    "clear-local-files": "Lokale Dateien löschen" 
+    "clear-local-files": "Lokale Dateien löschen",
+    "more": "Mehr",
+    "less": "Weniger",
+    "installing": "Installieren"
 }

@@ -22,7 +22,6 @@ export default function App() {
   //setTimeout(SplashScreen.hideAsync, 1000);
 
   const isDarkTheme = useColorScheme() == 'dark';
-  console.log(useColorScheme())
 
   const theme : ThemeProp = {
     ...isDarkTheme ? MD3DarkTheme : MD3LightTheme,
@@ -31,9 +30,8 @@ export default function App() {
     version: 3,
     colors: {
       ...isDarkTheme ? MD3DarkTheme.colors : MD3LightTheme.colors,
-      primary: '#EC407A',
-      secondary: '#28C4ED',
-      tertiary: '#F2D3DD',
+      primary: '#2196f3', //'#EC407A',
+      secondary: '#A68707', //'#28C4ED',
       background: isDarkTheme ? '#121212' : "#FFFFFF"
     },
   };
