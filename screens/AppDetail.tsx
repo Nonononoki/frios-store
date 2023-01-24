@@ -96,7 +96,7 @@ const AppDetail = ({ route, navigation }) => {
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                             {!app.isDownloaded && <Button loading={downloading} style={{ width: buttonSize }} labelStyle={{ fontSize: buttonFontSize, color: BUTTON_LABEL_COLOR }} mode="contained" onPress={() => downloadApp()}>
-                                {Global.I18N.get("get")}
+                                {downloading ? Global.I18N.get("downloading") : Global.I18N.get("get")}
                             </Button>}
                             {app.isDownloaded && app.hasUpdate && <Button loading={downloading} style={{ width: buttonSize }} labelStyle={{ fontSize: buttonFontSize, color: BUTTON_LABEL_COLOR }} mode="contained" onPress={() => downloadApp()}>
                                 {Global.I18N.get("update")}

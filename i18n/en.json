@@ -17,6 +17,5 @@
     "install": "Install",
     "clear-local-files": "Clear local files",
     "more": "More",
-    "less": "Less",
-    "installing": "Installing"
+    "less": "Less"
 }

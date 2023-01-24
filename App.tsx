@@ -31,7 +31,7 @@ export default function App() {
     colors: {
       ...isDarkTheme ? MD3DarkTheme.colors : MD3LightTheme.colors,
       primary: '#2196f3', //'#EC407A',
-      secondary: '#A68707', //'#28C4ED',
+      secondary: '#A0A60F', //'#28C4ED',
       background: isDarkTheme ? '#121212' : "#FFFFFF"
     },
   };

@@ -19,7 +19,7 @@ const AppListItem = ({ item }) => {
   }
 
   async function downloadApp() {
-    if(!downloading) {
+    if (!downloading) {
       setDownloading(true);
       await Global.downloadApp(item)
       setDownloading(false);
@@ -27,7 +27,7 @@ const AppListItem = ({ item }) => {
   }
 
   async function installApp() {
-    if(!downloading)
+    if (!downloading)
       await Global.installApp(item);
   }
 
@@ -46,7 +46,7 @@ const AppListItem = ({ item }) => {
         </View>
         <View>
           {!item.isDownloaded && <Button loading={downloading} style={{ width: buttonSize }} mode="elevated" onPress={() => downloadApp()}>
-            <Text style={{ fontSize: buttonFontSize, color: colors.primary }}>{Global.I18N.get("get")}</Text>
+            <Text style={{ fontSize: buttonFontSize, color: colors.primary }}>{downloading ? Global.I18N.get("downloading") : Global.I18N.get("get")}</Text>
           </Button>}
           {item.isDownloaded && item.hasUpdate && <Button loading={downloading} style={{ width: buttonSize }} mode="elevated" onPress={() => downloadApp()}>
             <Text style={{ fontSize: buttonFontSize, color: colors.primary }}>{Global.I18N.get("update")}</Text>
