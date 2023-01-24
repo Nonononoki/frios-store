@@ -53,18 +53,22 @@ const AppDetail = ({ route, navigation }) => {
         setImageViewVisible(true);
     }
 
-    function downloadApp() {
-        if (!downloading)
-            Global.downloadApp(app)
+    async function downloadApp() {
+        if(!downloading) {
+            setDownloading(true);
+            await Global.downloadApp(app)
+            setDownloading(false);
+          }
     }
 
-    function installApp() {
+    async function installApp() {
         if (!downloading)
             Global.installApp(app);
     }
 
     function clearLocalFiles() {
         setMenuVisible(false);
+        //TODO
     }
 
     return (

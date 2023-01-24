@@ -18,14 +18,17 @@ const AppListItem = ({ item }) => {
     });
   }
 
-  function downloadApp() {
-    if(!downloading)
-      Global.downloadApp(item)
+  async function downloadApp() {
+    if(!downloading) {
+      setDownloading(true);
+      await Global.downloadApp(item)
+      setDownloading(false);
+    }
   }
 
-  function installApp() {
+  async function installApp() {
     if(!downloading)
-      Global.installApp(item);
+      await Global.installApp(item);
   }
 
   return (

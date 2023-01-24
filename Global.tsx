@@ -27,16 +27,17 @@ export const STORAGE_INSTALLED_APPS = "INSTALLED_APPS";
 export const I18N = i18n.getI18n();
 export const URL_SOURCE_IOS = "https://raw.githubusercontent.com/Nonononoki/frios-sources/master/apps-ios.json";
 export const URL_SOURCE_TVOS = "https://raw.githubusercontent.com/Nonononoki/frios-sources/master/apps-tvos.json";
+export const URL_SOURCE = URL_SOURCE_IOS;
 
 export var appsDownloadingSet: Set<string> = new Set<string>();
 export var appDetailDoneDownload = null;
 
-export var installedApps: Map<string, AppInfoDto> = new Map<string, AppInfoDto>();
+export var downloadedApps: Map<string, AppInfoDto> = new Map<string, AppInfoDto>();
 
 export async function initDb() {
   let dbString = (await getStorage(STORAGE_INSTALLED_APPS));
   if (dbString) {
-    installedApps = new Map(JSON.parse(dbString));
+    downloadedApps = new Map(JSON.parse(dbString));
   }
   //TODO check local storage and removeAppFromDb()
 }
@@ -46,8 +47,8 @@ export async function deleteAppFromDb() {
 }
 
 export async function saveAppToDb(appInfo: AppInfoDto) {
-  installedApps.set(appInfo.bundleId, appInfo);
-  let json = JSON.stringify([...installedApps]);
+  downloadedApps.set(appInfo.bundleId, appInfo);
+  let json = JSON.stringify([...downloadedApps]);
   await setStorage(STORAGE_INSTALLED_APPS, json);
 }
 
@@ -132,6 +133,7 @@ export async function downloadApp(app: AppInfoDto) {
     let path = DIR_ALOVOA + app.bundleId + "_" + appDb.updateDate.getTime() + "." + app.file;
     await FileSystem.downloadAsync(appDb.remoteLocation, path);
     console.log("Download finished!")
+    app.isDownloaded = true;
     app.updateDate = appDb.updateDate;
     app.localLocation = path;
     await installApp(app);
@@ -204,7 +206,7 @@ export async function getAppDownloadLink(app: AppInfoDto): Promise<AppInfoDto> {
 }
 
 export async function hasAppUpdate(app: AppInfoDto): Promise<boolean> {
-  let installedApp = installedApps.get(app.bundleId)
+  let installedApp = downloadedApps.get(app.bundleId)
   let remoteApp = await getAppDownloadLink(app);
   if (remoteApp && remoteApp.updateDate > installedApp.updateDate) {
 

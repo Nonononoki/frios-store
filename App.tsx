@@ -18,8 +18,8 @@ export default function App() {
   const i18n = I18N.getI18n();
   const Stack = createStackNavigator();
 
-  SplashScreen.preventAutoHideAsync();
-  setTimeout(SplashScreen.hideAsync, 1000);
+  //SplashScreen.preventAutoHideAsync();
+  //setTimeout(SplashScreen.hideAsync, 1000);
 
   const isDarkTheme = useColorScheme() == 'dark';
   console.log(useColorScheme())

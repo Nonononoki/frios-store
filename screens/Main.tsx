@@ -22,8 +22,8 @@ const Main = () => {
     }
 
     async function loadAppsFromDb() {
-        if (Global.installedApps) {
-            for (let [key, value] of Global.installedApps) {
+        if (Global.downloadedApps) {
+            for (let [key, value] of Global.downloadedApps) {
                 value.isDownloaded = true;
                 value.hasUpdate = await Global.hasAppUpdate(value);
                 apps.set(key, value);
@@ -35,7 +35,7 @@ const Main = () => {
     async function update() {
         setSearchQuery("");
         Keyboard.dismiss();
-        var response = await Global.fetch(Global.URL_SOURCE_IOS)
+        var response = await Global.fetch(Global.URL_SOURCE)
         let data: Map<string, AppInfoT> = response.data;
 
         const map = new Map<string, AppInfoDto>();
