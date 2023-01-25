@@ -24,6 +24,7 @@ const AppDetail = ({ route, navigation }) => {
     const window = Dimensions.get("window");
 
     const [refreshing, setRefreshing] = React.useState(false);
+    const [changed, setChanged] = React.useState(false);
     const [imageViewVisible, setImageViewVisible] = React.useState(false);
     const [imageViewIndex, setImageViewIndex] = React.useState(0);
     const [descriptionCollapsed, setDescriptionCollapsed] = React.useState(true);
@@ -59,23 +60,35 @@ const AppDetail = ({ route, navigation }) => {
             setDownloading(true);
             await Global.downloadApp(app)
             setDownloading(false);
+            setChanged(true);
         }
     }
 
     async function installApp() {
-        if (!downloading)
+        if (!downloading) {
             Global.installApp(app);
+        }
     }
 
     function clearLocalFiles() {
         setMenuVisible(false);
-        //TODO
+        Global.clearLocalFiles(app.bundleId);
+        setChanged(true);
+        app.isDownloaded = false;
+    }
+
+    function goBack() {
+        navigation.navigate({
+            name: 'Main',
+            params: { changed: changed },
+            merge: true,
+        });
     }
 
     return (
         <View style={{ flex: 1 }}>
             <Appbar.Header>
-                <Appbar.BackAction onPress={() => { navigation.goBack() }} />
+                <Appbar.BackAction onPress={() => { goBack() }} />
                 <Appbar.Content title="" />
                 <Menu
                     visible={menuVisible}
@@ -84,6 +97,7 @@ const AppDetail = ({ route, navigation }) => {
                     <Menu.Item onPress={clearLocalFiles} title={Global.I18N.get("clear-local-files")} />
                 </Menu>
             </Appbar.Header>
+            <View style={{ paddingBottom: 8 }}></View>
 
             <ScrollView style={[{ flex: 1, paddingLeft: 12, paddingRight: 12, backgroundColor: colors.background }]}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}>

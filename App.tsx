@@ -23,7 +23,7 @@ export default function App() {
 
   const isDarkTheme = useColorScheme() == 'dark';
 
-  const theme : ThemeProp = {
+  const theme: ThemeProp = {
     ...isDarkTheme ? MD3DarkTheme : MD3LightTheme,
     dark: isDarkTheme,
     roundness: 2,
@@ -31,7 +31,7 @@ export default function App() {
     colors: {
       ...isDarkTheme ? MD3DarkTheme.colors : MD3LightTheme.colors,
       primary: '#2196f3', //'#EC407A',
-      secondary: '#A0A60F', //'#28C4ED',
+      secondary: '#9c27b0', //'#28C4ED',
       background: isDarkTheme ? '#121212' : "#FFFFFF"
     },
   };
@@ -42,11 +42,11 @@ export default function App() {
       ...isDarkTheme ? DarkTheme.colors : DefaultTheme.colors,
     },
   };
-  
+
   return (
     <PaperProvider theme={theme}>
       <StatusBar style={isDarkTheme ? "light" : "dark"} />
-       <RootSiblingParent>
+      <RootSiblingParent>
         <NavigationContainer theme={themeNavigation} ref={Global.navigationRef}>
           <Stack.Navigator>
             <Stack.Screen

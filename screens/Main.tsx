@@ -5,7 +5,7 @@ import * as Global from "../Global";
 import { AppInfoDto, AppInfoT } from "../types";
 import { AppListItem } from "../components";
 
-const Main = () => {
+const Main = ({ route, navigation }) => {
 
     const { colors } = useTheme();
     const window = Dimensions.get("window");
@@ -21,13 +21,23 @@ const Main = () => {
         await update();
     }
 
+    React.useEffect(() => {
+        if (route.params?.changed) {
+            load();
+        }
+    }, [route.params?.changed]);
+
     async function loadAppsFromDb() {
         if (Global.downloadedApps) {
             for (let [key, value] of Global.downloadedApps) {
                 value.isDownloaded = true;
+                apps.set(key, value);
+            }
+            setRefreshFlatList(!refreshFlatlist);
+            for (let [key, value] of Global.downloadedApps) {
                 value.hasUpdate = await Global.hasAppUpdate(value);
                 apps.set(key, value);
-            }         
+            }
             setRefreshFlatList(!refreshFlatlist);
         }
     }

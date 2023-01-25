@@ -42,8 +42,10 @@ export async function initDb() {
   //TODO check local storage and removeAppFromDb()
 }
 
-export async function deleteAppFromDb() {
-
+export async function deleteAppFromDb(bundleId: string) {
+  downloadedApps.delete(bundleId);
+  let json = JSON.stringify([...downloadedApps]);
+  await setStorage(STORAGE_INSTALLED_APPS, json);
 }
 
 export async function saveAppToDb(appInfo: AppInfoDto) {
@@ -208,7 +210,6 @@ export async function hasAppUpdate(app: AppInfoDto): Promise<boolean> {
   let installedApp = downloadedApps.get(app.bundleId)
   let remoteApp = await getAppDownloadLink(app);
   if (remoteApp && remoteApp.updateDate > installedApp.updateDate) {
-
     return true;
   }
   return false;
@@ -218,6 +219,16 @@ export async function installApp(app: AppInfoDto) {
   if (await Sharing.isAvailableAsync()) {
     Sharing.shareAsync(app.localLocation);
   }
+}
+
+export async function clearLocalFiles(bundleId: string) {
+  var files = await FileSystem.readDirectoryAsync(DIR_ALOVOA);
+  for (const file of files) {
+    if (file.startsWith(bundleId)) {
+      await FileSystem.deleteAsync(DIR_ALOVOA + file);
+    }
+  }
+  deleteAppFromDb(bundleId);
 }
 
 export const format = (str: string, ...args: any[]) => args.reduce((s, v) => s.replace('%s', v), str);
