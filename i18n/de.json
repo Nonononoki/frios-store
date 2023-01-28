@@ -10,12 +10,15 @@
     "official": "Offiziell",
     "unofficial": "Inoffiziell",
     "downloading": "Herunterladen",
-    "version": "Version",
-    "unknown": "Unbekannt",
     "description": "Beschreibung",
     "update": "Aktualisieren",
     "install": "Installieren",
     "clear-local-files": "Lokale Dateien löschen",
     "more": "Mehr",
-    "less": "Weniger"
+    "less": "Weniger",
+    "notification": {
+        "downloading-body": "%s wird heruntergeladen...",
+        "downloaded-body": "%s wurde heruntergeladen!"
+    }
+    
 }

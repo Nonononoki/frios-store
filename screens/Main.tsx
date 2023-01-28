@@ -1,6 +1,6 @@
 import React from "react";
-import { useTheme, Text, Button, Dialog, Portal, Provider, TextInput, IconButton, Searchbar } from "react-native-paper";
-import { View, FlatList, Platform, StyleSheet, Image, Dimensions, ScrollView, RefreshControl, TouchableOpacity, Keyboard } from "react-native";
+import { useTheme, Searchbar } from "react-native-paper";
+import { View, FlatList, Dimensions, RefreshControl, Keyboard } from "react-native";
 import * as Global from "../Global";
 import { AppInfoDto, AppInfoT } from "../types";
 import { AppListItem } from "../components";

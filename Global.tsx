@@ -1,7 +1,5 @@
-import React from "react";
-import { Linking, Platform, ToastAndroid } from 'react-native';
+import { Platform, ToastAndroid } from 'react-native';
 import axios, { AxiosResponse } from 'axios';
-import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNavigationContainerRef, useRoute } from '@react-navigation/native';
 import Toast from 'react-native-root-toast';
@@ -12,6 +10,7 @@ const { DOMParser } = require('react-native-html-parser')
 import { URL } from 'react-native-url-polyfill';
 import * as Sharing from 'expo-sharing';
 import moment from "moment";
+import * as Notifications from 'expo-notifications';
 
 export const navigationRef = createNavigationContainerRef();
 export const TYPE_IOS = "ios";
@@ -80,24 +79,10 @@ export function navigate(name: string, params?: any) {
 
 export async function getStorage(key: string): Promise<string | null> {
   return await AsyncStorage.getItem(key);
-  /*
-  if (Platform.OS === 'web') {
-    return await AsyncStorage.getItem(key);
-  } else {
-    return await SecureStore.getItemAsync(key);
-  }
-  */
 }
 
 export async function setStorage(key: string, value: string) {
   await AsyncStorage.setItem(key, value);
-  /*
-  if (Platform.OS === 'web') {
-    await AsyncStorage.setItem(key, value);
-  } else {
-    await SecureStore.setItemAsync(key, value);
-  }
-  */
 }
 
 export function showToast(text: string) {
@@ -133,12 +118,38 @@ export async function downloadApp(app: AppInfoDto) {
 
   if (appDb.remoteLocation) {
     let path = DIR_ALOVOA + app.bundleId + "_" + appDb.updateDate.getTime() + "." + app.file;
-    await FileSystem.downloadAsync(appDb.remoteLocation, path);
-    console.log("Download finished!")
+
+    const downloadResumable = FileSystem.createDownloadResumable(
+      appDb.remoteLocation,
+      path,
+      {},
+      downloadProgress => {
+        /*
+        const progress = Math.trunc((downloadProgress.totalBytesWritten /
+          downloadProgress.totalBytesExpectedToWrite) * 100);
+        console.log(progress);
+        */
+      }
+    );
+    var notificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: app.name,
+        body: format(I18N.get("notification.downloading-body"), app.name)
+      },
+      trigger: null,
+    });
+    await downloadResumable.downloadAsync();
+    Notifications.dismissNotificationAsync(notificationId);
     app.isDownloaded = true;
     app.updateDate = appDb.updateDate;
     app.localLocation = path;
-    await installApp(app);
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: app.name,
+        body: format(I18N.get("notification.downloaded-body"), app.name)
+      },
+      trigger: null,
+    });
     await saveAppToDb(app);
   }
   appsDownloadingSet.delete(app.bundleId);
@@ -216,8 +227,9 @@ export async function hasAppUpdate(app: AppInfoDto): Promise<boolean> {
 }
 
 export async function installApp(app: AppInfoDto) {
+  var location = app.localLocation;
   if (await Sharing.isAvailableAsync()) {
-    Sharing.shareAsync(app.localLocation);
+    Sharing.shareAsync(location);
   }
 }
 

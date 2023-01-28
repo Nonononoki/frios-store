@@ -1,25 +1,29 @@
 import React from "react";
 import { AppDetail, Main, Settings } from "./screens";
-import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from "@react-navigation/native";
-import { useColorScheme } from 'react-native';
+import { useColorScheme, LogBox } from 'react-native';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { MD3LightTheme, MD3DarkTheme, Provider as PaperProvider } from 'react-native-paper';
 import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProp } from "react-native-paper/lib/typescript/types";
 import { createStackNavigator } from "@react-navigation/stack";
-import * as I18N from "./i18n";
 import * as Global from "./Global";
+import * as Notifications from 'expo-notifications';
 
 
 export default function App() {
 
-  const i18n = I18N.getI18n();
   const Stack = createStackNavigator();
 
-  //SplashScreen.preventAutoHideAsync();
-  //setTimeout(SplashScreen.hideAsync, 1000);
+  LogBox.ignoreAllLogs();
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
 
   const isDarkTheme = useColorScheme() == 'dark';
 

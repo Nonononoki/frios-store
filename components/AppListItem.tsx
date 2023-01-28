@@ -21,8 +21,9 @@ const AppListItem = ({ item }) => {
   async function downloadApp() {
     if (!downloading) {
       setDownloading(true);
-      await Global.downloadApp(item)
+      await Global.downloadApp(item);
       setDownloading(false);
+      await Global.installApp(item);
     }
   }
 

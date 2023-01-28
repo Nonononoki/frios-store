@@ -1,6 +1,6 @@
 import React from "react";
 import { useTheme, Text, Button, Appbar, Menu } from "react-native-paper";
-import { View, Image, Dimensions, ScrollView, RefreshControl, TouchableOpacityComponent, TouchableOpacity } from "react-native";
+import { View, Image, Dimensions, ScrollView, RefreshControl, TouchableOpacity } from "react-native";
 import ImageView from "react-native-image-viewing";
 import * as Linking from 'expo-linking';
 import * as Global from "../Global";
@@ -58,8 +58,9 @@ const AppDetail = ({ route, navigation }) => {
     async function downloadApp() {
         if (!downloading) {
             setDownloading(true);
-            await Global.downloadApp(app)
+            await Global.downloadApp(app);      
             setDownloading(false);
+            await Global.installApp(app);
             setChanged(true);
         }
     }

@@ -10,12 +10,14 @@
     "official": "Official",
     "unofficial": "Unofficial",
     "downloading": "Downloading",
-    "version": "Version",
-    "unknown": "Unknown",
     "description": "Description",
     "update": "Update",
     "install": "Install",
     "clear-local-files": "Clear local files",
     "more": "More",
-    "less": "Less"
+    "less": "Less",
+    "notification": {
+        "downloading-body": "Downloading %s...",
+        "downloaded-body": "%s was downloaded!"
+    }
 }
