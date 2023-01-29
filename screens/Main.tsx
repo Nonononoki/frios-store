@@ -9,7 +9,6 @@ const Main = ({ route, navigation }) => {
 
     const { colors } = useTheme();
     const window = Dimensions.get("window");
-    const updateIntervalHours = 24; //When sources should be updated TODO should be able to be changed by user
 
     const [apps, setApps] = React.useState<Map<string, AppInfoDto>>();
     const [refreshing, setRefreshing] = React.useState(false);
@@ -35,7 +34,8 @@ const Main = ({ route, navigation }) => {
             }
             setRefreshFlatList(!refreshFlatlist);
             for (let [key, value] of Global.downloadedApps) {
-                value.hasUpdate = await Global.hasAppUpdate(value);
+                let appUpdate = await Global.hasAppUpdate(value);
+                value.hasUpdate = appUpdate.hasUpdate;
                 apps.set(key, value);
             }
             setRefreshFlatList(!refreshFlatlist);

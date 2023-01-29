@@ -89,3 +89,7 @@ export type GithubReleasesAssetT = {
   browser_download_url: string;
 }
 
+export type AppUpdateT = {
+  hasUpdate: boolean;
+  remoteUpdateDate: Date;
+}

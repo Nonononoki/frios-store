@@ -5,7 +5,7 @@ import { createNavigationContainerRef, useRoute } from '@react-navigation/native
 import Toast from 'react-native-root-toast';
 import * as i18n from "./i18n";
 import * as FileSystem from 'expo-file-system';
-import { AppInfoDto, AppSourceE, GithubReleasesAssetT, GithubReleasesT } from "./types";
+import { AppInfoDto, AppSourceE, GithubReleasesAssetT, GithubReleasesT, AppUpdateT } from "./types";
 const { DOMParser } = require('react-native-html-parser')
 import { URL } from 'react-native-url-polyfill';
 import * as Sharing from 'expo-sharing';
@@ -114,9 +114,10 @@ export function getHostname(uri: string) {
 export async function downloadApp(app: AppInfoDto) {
   appsDownloadingSet.add(app.bundleId);
 
+  let oldAppUpdateDate = app.updateDate;
   let appDb = await getAppDownloadLink(app);
 
-  if (appDb.remoteLocation) {
+  if (appDb.remoteLocation && (!oldAppUpdateDate || oldAppUpdateDate < appDb.updateDate)) {
     let path = DIR_ALOVOA + app.bundleId + "_" + appDb.updateDate.getTime() + "." + app.file;
 
     const downloadResumable = FileSystem.createDownloadResumable(
@@ -217,13 +218,13 @@ export async function getAppDownloadLink(app: AppInfoDto): Promise<AppInfoDto> {
   return app;
 }
 
-export async function hasAppUpdate(app: AppInfoDto): Promise<boolean> {
+export async function hasAppUpdate(app: AppInfoDto): Promise<AppUpdateT> {
   let installedApp = downloadedApps.get(app.bundleId)
   let remoteApp = await getAppDownloadLink(app);
   if (remoteApp && remoteApp.updateDate > installedApp.updateDate) {
-    return true;
+    return { hasUpdate: true, remoteUpdateDate: remoteApp.updateDate};
   }
-  return false;
+  return { hasUpdate: false, remoteUpdateDate: remoteApp.updateDate};
 }
 
 export async function installApp(app: AppInfoDto) {
