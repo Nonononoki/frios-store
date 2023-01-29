@@ -98,9 +98,8 @@ const AppDetail = ({ route, navigation }) => {
                     <Menu.Item onPress={clearLocalFiles} title={Global.I18N.get("clear-local-files")} />
                 </Menu>
             </Appbar.Header>
-            <View style={{ paddingBottom: 8 }}></View>
 
-            <ScrollView style={[{ flex: 1, paddingLeft: 12, paddingRight: 12, backgroundColor: colors.background }]}
+            <ScrollView style={[{ flex: 1, paddingLeft: 12, paddingRight: 12, paddingTop:12, backgroundColor: colors.background }]}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}>
                 <View style={{ flexDirection: 'row' }}>
                     <Image style={{ width: iconSize, height: iconSize, borderRadius: 8 }} source={{ uri: app.icon }}></Image>
@@ -160,6 +159,7 @@ const AppDetail = ({ route, navigation }) => {
                                 {Global.I18N.get("website")}
                             </Button>
                         }
+
                     </ScrollView>
                 </View>
 
@@ -194,6 +194,8 @@ const AppDetail = ({ route, navigation }) => {
                     swipeToCloseEnabled={true}
                     onRequestClose={() => setImageViewVisible(false)}
                 />
+
+            <View style={{paddingTop: 24}}></View>
             </ScrollView>
         </View>
     )
